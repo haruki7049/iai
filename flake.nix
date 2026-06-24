@@ -58,8 +58,8 @@
             pkgs.gomod2nix # gomod2nix for creating Hashes (./gomod2nix.toml)
           ];
 
-          gopher-clicker = pkgs.buildGoApplication {
-            name = "gopher-clicker";
+          iai = pkgs.buildGoApplication {
+            name = "iai";
             src = lib.cleanSource ./.;
             modules = ./gomod2nix.toml;
             inherit buildInputs nativeBuildInputs;
@@ -91,12 +91,12 @@
           };
 
           packages = {
-            inherit gopher-clicker;
-            default = gopher-clicker;
+            inherit iai;
+            default = iai;
           };
 
           checks = {
-            inherit gopher-clicker;
+            inherit iai;
           };
 
           devShells.default = pkgs.mkShell {
