@@ -36,7 +36,7 @@ const (
 
 	// deadFadeDuration is how long the background takes to fade from
 	// black to red after the player fails, before returning to the menu.
-	deadFadeDuration = 3 * time.Second
+	deadFadeDuration = 5 * time.Second
 )
 
 // GameScene is the iai-giri (quick-draw slash) mini-game screen.
