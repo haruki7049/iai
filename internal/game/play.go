@@ -15,9 +15,10 @@ type gameState int
 
 const (
 	gameStateWaiting gameState = iota // waiting for the random cue delay
+	gameStateMistake                  // player clicked too early (false start)
 	gameStateSlash                    // "Slash!!" is shown, waiting for player reaction
 	gameStateClear                    // player reacted in time
-	gameStateDead                     // player reacted too late (or not at all)
+	gameStateDead                     // player reacted too late, or made a mistake
 )
 
 const (
@@ -30,13 +31,17 @@ const (
 	// after "Slash!!" appears in order to succeed.
 	slashReactionLimit = 500 * time.Millisecond
 
+	// mistakeDisplayDuration is how long "Mistake!!" stays on screen
+	// before the false start counts as a death.
+	mistakeDisplayDuration = 1500 * time.Millisecond
+
 	// clearDisplayDuration is how long "Clear!!" stays on screen
 	// before returning to the menu.
 	clearDisplayDuration = 5 * time.Second
 
 	// deadFadeDuration is how long the background takes to fade from
 	// black to red after the player fails, before returning to the menu.
-	deadFadeDuration = 5 * time.Second
+	deadFadeDuration = 3 * time.Second
 )
 
 // GameScene is the iai-giri (quick-draw slash) mini-game screen.
@@ -65,8 +70,17 @@ func randomSlashWait() time.Duration {
 func (s *GameScene) Update() (Scene, error) {
 	switch s.state {
 	case gameStateWaiting:
-		if time.Since(s.stateTime) >= s.slashWait {
+		switch {
+		case inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
+			// Clicked before "Slash!!" appeared: a false start.
+			s.enterState(gameStateMistake)
+		case time.Since(s.stateTime) >= s.slashWait:
 			s.enterState(gameStateSlash)
+		}
+
+	case gameStateMistake:
+		if time.Since(s.stateTime) >= mistakeDisplayDuration {
+			s.enterState(gameStateDead)
 		}
 
 	case gameStateSlash:
@@ -114,6 +128,8 @@ func (s *GameScene) Draw(screen *ebiten.Image) {
 // message returns the text to show for the current state.
 func (s *GameScene) message() string {
 	switch s.state {
+	case gameStateMistake:
+		return "Mistake!!"
 	case gameStateSlash:
 		return "Slash!!"
 	case gameStateClear:
