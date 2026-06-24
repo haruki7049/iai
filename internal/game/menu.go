@@ -7,13 +7,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-// MenuScene is the in-game menu screen, reached from the title screen.
 type MenuScene struct {
-	gameButton *Button
-	exitButton *Button
+	gameButton       *Button
+	exitButton       *Button
+	scoreboardButton *Button
 }
 
-// NewMenuScene creates a new MenuScene.
 func NewMenuScene() *MenuScene {
 	return &MenuScene{
 		gameButton: &Button{
@@ -24,6 +23,10 @@ func NewMenuScene() *MenuScene {
 			Bounds: image.Rect(20, 100, 140, 132),
 			Label:  "Exit",
 		},
+		scoreboardButton: &Button{
+			Bounds: image.Rect(20, 140, 180, 172),
+			Label:  "Score Board",
+		},
 	}
 }
 
@@ -32,9 +35,10 @@ func (s *MenuScene) Update() (Scene, error) {
 		return NewGameScene(), nil
 	}
 	if s.exitButton.Clicked() {
-		// ebiten.Termination signals a normal, intentional exit; the
-		// caller (main) treats it differently from a real error.
 		return nil, ebiten.Termination
+	}
+	if s.scoreboardButton.Clicked() {
+		return NewScoreboardScene(), nil
 	}
 	return nil, nil
 }
@@ -47,4 +51,5 @@ func (s *MenuScene) Draw(screen *ebiten.Image) {
 
 	s.gameButton.Draw(screen, fontFace)
 	s.exitButton.Draw(screen, fontFace)
+	s.scoreboardButton.Draw(screen, fontFace)
 }
