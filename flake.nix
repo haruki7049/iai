@@ -56,8 +56,6 @@
             pkgs.nil # Nix LSP
             pkgs.gopls # Golang LSP
             pkgs.gomod2nix # gomod2nix for creating Hashes (./gomod2nix.toml)
-
-            pkgs.powershell # For scripting (Powershell is needed to align my Linux environment with Windows)
           ];
 
           gopher-clicker = pkgs.buildGoApplication {
