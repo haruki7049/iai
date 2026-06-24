@@ -23,20 +23,37 @@ const (
 
 const (
 	// slashWaitMin and slashWaitMax bound the random delay before
-	// "Slash!!" is shown.
+	// "Slash!!" is shown. This stays the same across rounds.
 	slashWaitMin = 5 * time.Second
 	slashWaitMax = 15 * time.Second
 
-	// slashReactionLimit is the time window the player has to click
-	// after "Slash!!" appears in order to succeed.
-	slashReactionLimit = 500 * time.Millisecond
+	// initialReactionLimit is the reaction window for the very first
+	// round. It shrinks after every successful clear.
+	initialReactionLimit = 500 * time.Millisecond
+
+	// reactionLimitFloor is the lowest the reaction window can ever
+	// shrink to.
+	reactionLimitFloor = 10 * time.Millisecond
+
+	// reactionLimitStepLarge is the per-clear decrement while the
+	// reaction window is still above reactionLimitStepThreshold.
+	reactionLimitStepLarge = 50 * time.Millisecond
+
+	// reactionLimitStepThreshold is the reaction window value at which
+	// the decrement step switches from reactionLimitStepLarge to
+	// reactionLimitStepSmall.
+	reactionLimitStepThreshold = 50 * time.Millisecond
+
+	// reactionLimitStepSmall is the per-clear decrement once the
+	// reaction window has reached reactionLimitStepThreshold.
+	reactionLimitStepSmall = 10 * time.Millisecond
 
 	// mistakeDisplayDuration is how long "Mistake!!" stays on screen
 	// before the false start counts as a death.
 	mistakeDisplayDuration = 1500 * time.Millisecond
 
 	// clearDisplayDuration is how long "Clear!!" stays on screen
-	// before returning to the menu.
+	// before the next round begins.
 	clearDisplayDuration = 5 * time.Second
 
 	// deadFadeDuration is how long the background takes to fade from
@@ -46,18 +63,20 @@ const (
 
 // GameScene is the iai-giri (quick-draw slash) mini-game screen.
 type GameScene struct {
-	state     gameState
-	stateTime time.Time     // when the current state started
-	slashWait time.Duration // randomly chosen delay before the slash cue
+	state         gameState
+	stateTime     time.Time     // when the current state started
+	slashWait     time.Duration // randomly chosen delay before the slash cue
+	reactionLimit time.Duration // current round's reaction window
 }
 
 // NewGameScene creates a new GameScene and rolls the random delay before
 // the slash cue appears.
 func NewGameScene() *GameScene {
 	return &GameScene{
-		state:     gameStateWaiting,
-		stateTime: time.Now(),
-		slashWait: randomSlashWait(),
+		state:         gameStateWaiting,
+		stateTime:     time.Now(),
+		slashWait:     randomSlashWait(),
+		reactionLimit: initialReactionLimit,
 	}
 }
 
@@ -65,6 +84,26 @@ func NewGameScene() *GameScene {
 func randomSlashWait() time.Duration {
 	span := slashWaitMax - slashWaitMin
 	return slashWaitMin + time.Duration(rand.Int64N(int64(span)+1))
+}
+
+// nextReactionLimit returns the reaction window for the round after a
+// successful clear. It shrinks by reactionLimitStepLarge per clear until
+// it reaches reactionLimitStepThreshold, then shrinks by
+// reactionLimitStepSmall, never going below reactionLimitFloor.
+func nextReactionLimit(current time.Duration) time.Duration {
+	var next time.Duration
+	if current > reactionLimitStepThreshold {
+		next = current - reactionLimitStepLarge
+		if next < reactionLimitStepThreshold {
+			next = reactionLimitStepThreshold
+		}
+	} else {
+		next = current - reactionLimitStepSmall
+	}
+	if next < reactionLimitFloor {
+		next = reactionLimitFloor
+	}
+	return next
 }
 
 func (s *GameScene) Update() (Scene, error) {
@@ -88,15 +127,19 @@ func (s *GameScene) Update() (Scene, error) {
 		elapsed := time.Since(s.stateTime)
 
 		switch {
-		case clicked && elapsed < slashReactionLimit:
+		case clicked && elapsed < s.reactionLimit:
 			s.enterState(gameStateClear)
-		case clicked || elapsed >= slashReactionLimit:
+		case clicked || elapsed >= s.reactionLimit:
 			s.enterState(gameStateDead)
 		}
 
 	case gameStateClear:
 		if time.Since(s.stateTime) >= clearDisplayDuration {
-			return NewMenuScene(), nil
+			// Start the next round: shrink the reaction window, roll
+			// a fresh random wait, and go back to waiting.
+			s.reactionLimit = nextReactionLimit(s.reactionLimit)
+			s.slashWait = randomSlashWait()
+			s.enterState(gameStateWaiting)
 		}
 
 	case gameStateDead:
