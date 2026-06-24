@@ -8,8 +8,8 @@ import (
 
 var fontFace = text.NewGoXFace(bitmapfont.Face)
 
-const WINDOW_WIDTH = 640
-const WINDOW_HEIGHT = 480
+const WINDOW_WIDTH = 1280
+const WINDOW_HEIGHT = 720
 
 type Game struct{}
 
@@ -24,5 +24,5 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return outsideWidth / 2, outsideHeight / 2
+	return outsideWidth / 4, outsideHeight / 4
 }
