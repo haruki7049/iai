@@ -7,6 +7,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
+const TITLE = "iai"
+
 // TitleScene is the first screen shown when the game starts. It shows the
 // game title and a button that leads to the in-game menu.
 type TitleScene struct {
@@ -34,7 +36,7 @@ func (s *TitleScene) Draw(screen *ebiten.Image) {
 	titleOp := &text.DrawOptions{}
 	titleOp.GeoM.Translate(20, 20)
 	titleOp.LineSpacing = fontFace.Metrics().HLineGap + fontFace.Metrics().HAscent + fontFace.Metrics().HDescent
-	text.Draw(screen, "Iai", fontFace, titleOp)
+	text.Draw(screen, TITLE, fontFace, titleOp)
 
 	s.menuButton.Draw(screen, fontFace)
 }
