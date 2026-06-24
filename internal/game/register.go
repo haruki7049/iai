@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"image"
+	"io"
+	"log"
 	"net/http"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -86,8 +88,18 @@ func (s *RegisterScene) saveScore() {
 	if err == nil {
 		resp, err := http.Post(apiURL, "application/json", bytes.NewBuffer(data))
 		if err == nil {
-			resp.Body.Close()
+			defer resp.Body.Close()
+			if resp.StatusCode != http.StatusCreated {
+				// Read and log the error message from the server
+				body, _ := io.ReadAll(resp.Body)
+				log.Printf("Server error: %d %s\nBody: %s", resp.StatusCode, resp.Status, string(body))
+			}
+		} else {
+			// Log network errors
+			log.Printf("Network error: %v", err)
 		}
+	} else {
+		log.Printf("JSON encode error: %v", err)
 	}
 	s.isDone = true
 }
