@@ -94,10 +94,7 @@ func randomSlashWait() time.Duration {
 func nextReactionLimit(current time.Duration) time.Duration {
 	var next time.Duration
 	if current > reactionLimitStepThreshold {
-		next = current - reactionLimitStepLarge
-		if next < reactionLimitStepThreshold {
-			next = reactionLimitStepThreshold
-		}
+		next = max(current-reactionLimitStepLarge, reactionLimitStepThreshold)
 	} else {
 		next = current - reactionLimitStepSmall
 	}
