@@ -43,7 +43,7 @@ func (b *Button) Draw(screen *ebiten.Image, face text.Face) {
 		clr = buttonHoverColor
 	}
 
-	vector.DrawFilledRect(
+	vector.FillRect(
 		screen,
 		float32(b.Bounds.Min.X),
 		float32(b.Bounds.Min.Y),
