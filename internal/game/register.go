@@ -12,7 +12,7 @@ import (
 )
 
 // Replace with your actual Cloud Run URL
-const apiURL = "https://iai-server-63587581912.europe-west1.run.app"
+const apiURL = "https://iai-server-63587581912.europe-west1.run.app/scores"
 
 type ScoreRecord struct {
 	Nickname string `json:"nickname"`
