@@ -35,7 +35,7 @@ func (s *TitleScene) Update() (Scene, error) {
 func (s *TitleScene) Draw(screen *ebiten.Image) {
 	titleOp := &text.DrawOptions{}
 	titleOp.GeoM.Translate(20, 20)
-	titleOp.LineSpacing = fontFace.Metrics().HLineGap + fontFace.Metrics().HAscent + fontFace.Metrics().HDescent
+	titleOp.LineSpacing = lineSpacing()
 	text.Draw(screen, TITLE, fontFace, titleOp)
 
 	s.menuButton.Draw(screen, fontFace)

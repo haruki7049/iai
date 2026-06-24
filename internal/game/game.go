@@ -44,3 +44,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return outsideWidth / 4, outsideHeight / 4
 }
+
+// lineSpacing returns the standard line spacing for fontFace, used by
+// every scene when drawing text.
+func lineSpacing() float64 {
+	m := fontFace.Metrics()
+	return m.HLineGap + m.HAscent + m.HDescent
+}

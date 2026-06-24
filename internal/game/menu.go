@@ -42,7 +42,7 @@ func (s *MenuScene) Update() (Scene, error) {
 func (s *MenuScene) Draw(screen *ebiten.Image) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(20, 20)
-	op.LineSpacing = fontFace.Metrics().HLineGap + fontFace.Metrics().HAscent + fontFace.Metrics().HDescent
+	op.LineSpacing = lineSpacing()
 	text.Draw(screen, "Menu", fontFace, op)
 
 	s.gameButton.Draw(screen, fontFace)

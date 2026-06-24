@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
 	"math/rand/v2"
 	"time"
@@ -163,9 +164,32 @@ func (s *GameScene) Draw(screen *ebiten.Image) {
 	if msg := s.message(); msg != "" {
 		op := &text.DrawOptions{}
 		op.GeoM.Translate(20, 20)
-		op.LineSpacing = fontFace.Metrics().HLineGap + fontFace.Metrics().HAscent + fontFace.Metrics().HDescent
+		op.LineSpacing = lineSpacing()
 		text.Draw(screen, msg, fontFace, op)
 	}
+
+	if s.state == gameStateSlash {
+		s.drawElapsedMillis(screen)
+	}
+}
+
+// drawElapsedMillis renders the elapsed time since "Slash!!" appeared,
+// in milliseconds, centered on the screen. It is only shown while the
+// player's input is being accepted.
+func (s *GameScene) drawElapsedMillis(screen *ebiten.Image) {
+	elapsedMs := time.Since(s.stateTime).Milliseconds()
+	msg := fmt.Sprintf("%d ms", elapsedMs)
+
+	w, h := text.Measure(msg, fontFace, lineSpacing())
+	bounds := screen.Bounds()
+
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(
+		float64(bounds.Dx())/2-w/2,
+		float64(bounds.Dy())/2-h/2,
+	)
+	op.LineSpacing = lineSpacing()
+	text.Draw(screen, msg, fontFace, op)
 }
 
 // message returns the text to show for the current state.
