@@ -177,10 +177,7 @@ func (s *GameScene) Draw(screen *ebiten.Image) {
 // reaction window for the current round runs out. It is only shown while
 // the player's input is being accepted.
 func (s *GameScene) drawRemainingMillis(screen *ebiten.Image) {
-	remaining := s.reactionLimit - time.Since(s.stateTime)
-	if remaining < 0 {
-		remaining = 0
-	}
+	remaining := max(s.reactionLimit-time.Since(s.stateTime), 0)
 	msg := fmt.Sprintf("%d ms", remaining.Milliseconds())
 
 	w, h := text.Measure(msg, fontFace, lineSpacing())
