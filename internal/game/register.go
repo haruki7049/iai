@@ -13,7 +13,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-// Replace with your actual Cloud Run URL
+// My actual Cloud Run URL
 const apiURL = "https://iai-server-63587581912.europe-west1.run.app/scores"
 
 type ScoreRecord struct {
