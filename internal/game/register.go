@@ -3,6 +3,7 @@ package game
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"image"
 	"io"
 	"log"
@@ -110,7 +111,7 @@ func (s *RegisterScene) Draw(screen *ebiten.Image) {
 	op.LineSpacing = lineSpacing()
 
 	if s.isAsking {
-		text.Draw(screen, "Register your score?", fontFace, op)
+		text.Draw(screen, fmt.Sprintf("Score: %d\nRegister your score?", s.score), fontFace, op)
 		s.yesButton.Draw(screen, fontFace)
 		s.noButton.Draw(screen, fontFace)
 		return
@@ -121,5 +122,5 @@ func (s *RegisterScene) Draw(screen *ebiten.Image) {
 		return
 	}
 
-	text.Draw(screen, "Enter nickname and press Enter:\n"+string(s.nickname), fontFace, op)
+	text.Draw(screen, fmt.Sprintf("Score: %d\nEnter nickname and press Enter:\n%s", s.score, string(s.nickname)), fontFace, op)
 }
