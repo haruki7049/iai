@@ -197,7 +197,7 @@ func (s *GameScene) message() string {
 	case gameStateSlash:
 		return "Slash!!"
 	case gameStateClear:
-		return "Clear!!"
+		return "Clear!! Next game will start right away..."
 	case gameStateDead:
 		return "You are dead."
 	default:
