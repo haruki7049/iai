@@ -169,16 +169,19 @@ func (s *GameScene) Draw(screen *ebiten.Image) {
 	}
 
 	if s.state == gameStateSlash {
-		s.drawElapsedMillis(screen)
+		s.drawRemainingMillis(screen)
 	}
 }
 
-// drawElapsedMillis renders the elapsed time since "Slash!!" appeared,
-// in milliseconds, centered on the screen. It is only shown while the
-// player's input is being accepted.
-func (s *GameScene) drawElapsedMillis(screen *ebiten.Image) {
-	elapsedMs := time.Since(s.stateTime).Milliseconds()
-	msg := fmt.Sprintf("%d ms", elapsedMs)
+// drawRemainingMillis renders the time left, in milliseconds, before the
+// reaction window for the current round runs out. It is only shown while
+// the player's input is being accepted.
+func (s *GameScene) drawRemainingMillis(screen *ebiten.Image) {
+	remaining := s.reactionLimit - time.Since(s.stateTime)
+	if remaining < 0 {
+		remaining = 0
+	}
+	msg := fmt.Sprintf("%d ms", remaining.Milliseconds())
 
 	w, h := text.Measure(msg, fontFace, lineSpacing())
 	bounds := screen.Bounds()
