@@ -40,12 +40,16 @@
         let
           overlays = [ inputs.gomod2nix.overlays.default ];
           buildInputs = lib.optionals pkgs.stdenv.isLinux [
+            # Build-time dependencies
             pkgs.libx11
             pkgs.libxrandr
             pkgs.libxcursor
             pkgs.libxinerama
             pkgs.libxi
             pkgs.libxxf86vm
+
+            # Runtime dependencies
+            pkgs.libGL
           ];
           nativeBuildInputs = [
             pkgs.go # Golang
