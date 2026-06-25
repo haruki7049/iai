@@ -106,6 +106,7 @@ func (s *GameScene) Update() (Scene, error) {
 			s.score++ // Increment score on clear
 			s.reactionLimit = nextReactionLimit(s.reactionLimit)
 			s.slashWait = randomSlashWait()
+
 			s.enterState(gameStateWaiting)
 		}
 
@@ -121,6 +122,10 @@ func (s *GameScene) Update() (Scene, error) {
 func (s *GameScene) enterState(next gameState) {
 	s.state = next
 	s.stateTime = time.Now()
+
+	if s.state == gameStateWaiting {
+		playDecisionSound()
+	}
 }
 
 func (s *GameScene) Draw(screen *ebiten.Image) {
