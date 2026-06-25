@@ -54,9 +54,11 @@ func (s *RegisterScene) Update() (Scene, error) {
 
 	if s.isAsking {
 		if s.yesButton.Clicked() {
+			playDecisionSound()
 			s.isAsking = false
 		}
 		if s.noButton.Clicked() {
+			playCancelSound()
 			return NewMenuScene(), nil
 		}
 		return nil, nil
@@ -72,6 +74,7 @@ func (s *RegisterScene) Update() (Scene, error) {
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) && len(s.nickname) > 0 {
+		playDecisionSound()
 		s.isSaving = true
 		go s.saveScore()
 	}

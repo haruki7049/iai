@@ -75,13 +75,16 @@ func (s *GameScene) Update() (Scene, error) {
 	case gameStateWaiting:
 		switch {
 		case inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
+			playCutSound()
 			s.enterState(gameStateMistake)
 		case time.Since(s.stateTime) >= s.slashWait:
+			playCutSound()
 			s.enterState(gameStateSlash)
 		}
 
 	case gameStateMistake:
 		if time.Since(s.stateTime) >= mistakeDisplayDuration {
+			playCutSound()
 			s.enterState(gameStateDead)
 		}
 
@@ -91,8 +94,10 @@ func (s *GameScene) Update() (Scene, error) {
 
 		switch {
 		case clicked && elapsed < s.reactionLimit:
+			playCutSound()
 			s.enterState(gameStateClear)
 		case clicked || elapsed >= s.reactionLimit:
+			playCutSound()
 			s.enterState(gameStateDead)
 		}
 

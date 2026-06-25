@@ -32,12 +32,14 @@ func NewMenuScene() *MenuScene {
 
 func (s *MenuScene) Update() (Scene, error) {
 	if s.gameButton.Clicked() {
+		playDecisionSound()
 		return NewGameScene(), nil
 	}
 	if s.exitButton.Clicked() {
 		return nil, ebiten.Termination
 	}
 	if s.scoreboardButton.Clicked() {
+		playDecisionSound()
 		return NewScoreboardScene(), nil
 	}
 	return nil, nil

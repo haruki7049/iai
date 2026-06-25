@@ -58,6 +58,7 @@ func (s *ScoreboardScene) fetchScores() {
 
 func (s *ScoreboardScene) Update() (Scene, error) {
 	if s.backBtn.Clicked() {
+		playCancelSound()
 		return NewMenuScene(), nil
 	}
 	return nil, nil

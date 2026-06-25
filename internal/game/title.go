@@ -27,6 +27,7 @@ func NewTitleScene() *TitleScene {
 
 func (s *TitleScene) Update() (Scene, error) {
 	if s.menuButton.Clicked() {
+		playDecisionSound()
 		return NewMenuScene(), nil
 	}
 	return nil, nil
