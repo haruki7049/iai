@@ -37,6 +37,13 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
+      # Install dependencies for Ebitengine on Linux
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libxcursor-dev libxi-dev libxrandr-dev libxxf86vm-dev libx11-dev
+
       # Build the application
       - name: Build
         env:
