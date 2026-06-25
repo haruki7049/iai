@@ -42,17 +42,13 @@
           buildInputs = lib.optionals pkgs.stdenv.isLinux [
             pkgs.libx11
             pkgs.libxrandr
-            pkgs.libGL
             pkgs.libxcursor
             pkgs.libxinerama
             pkgs.libxi
             pkgs.libxxf86vm
-            pkgs.libglvnd
-            pkgs.alsa-lib
           ];
           nativeBuildInputs = [
             pkgs.go # Golang
-            pkgs.pkg-config # pkg-config
             pkgs.nil # Nix LSP
             pkgs.gopls # Golang LSP
             pkgs.gomod2nix # gomod2nix for creating Hashes (./gomod2nix.toml)
