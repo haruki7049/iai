@@ -50,7 +50,7 @@ jobs:
             libxi-dev \
             libxxf86vm-dev \
             libasound2-dev \
-            libglx-dev
+            libgl1-mesa-dev
 
       # Build the application
       - name: Build
